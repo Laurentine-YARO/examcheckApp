@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "996905435967",
+    "project_id": "examcheck-app-3b245",
+    "storage_bucket": "examcheck-app-3b245.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:996905435967:android:0856021e3777242ee5098a",
+        "android_client_info": {
+          "package_name": "com.examcheck.app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB4-OftcUQxO-n2-X7VS_EIGUeI6kccV9A"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:996905435967:android:b65cca33ef19ff3ee5098a",
+        "android_client_info": {
+          "package_name": "com.example.examcheck_app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB4-OftcUQxO-n2-X7VS_EIGUeI6kccV9A"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

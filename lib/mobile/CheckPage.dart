@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:examcheck_app/utils/app_colors.dart';
-import 'package:examcheck_app/SuccessPage.dart';
-import 'package:examcheck_app/SecondTourPage.dart';
-import 'package:examcheck_app/EchecPage.dart';
+import 'package:examcheck_app/mobile/SuccessPage.dart';
+import 'package:examcheck_app/mobile/SecondTourPage.dart';
+import 'package:examcheck_app/mobile/EchecPage.dart';
 
 class CheckPage extends StatefulWidget {
   const CheckPage({super.key});
@@ -61,13 +61,13 @@ class _CheckPageState extends State<CheckPage> {
       'prenom': 'Awa',
       'annee': '2024',
       'notes': {
-        'SVT': 12,
-        'EPS': 14,
-        'Anglais': 15,
-        'Physique chimie': 11,
-        'Français': 10,
-        'Histoire et géographie': 8,
-        'Mathématiques': 9,
+        'SVT': 12.0,
+        'EPS': 14.0,
+        'Anglais': 15.0,
+        'Physique chimie': 11.0,
+        'Français': 10.0,
+        'Histoire et géographie': 8.0,
+        'Mathématiques': 9.0,
       },
       'coefs': {
         'Français': 3,
@@ -88,14 +88,14 @@ class _CheckPageState extends State<CheckPage> {
       'prenom': 'Awa',
       'annee': '2023',
       'notes': {
-        'Mathématiques': 8,
-        'Physique chimie': 9,
-        'EPS': 10,
-        'SVT': 7,
-        'Anglais': 6,
-        'Philosophie': 5,
-        'Histoire et géographie': 9,
-        'Français': 7,
+        'Mathématiques': 8.0,
+        'Physique chimie': 9.0,
+        'EPS': 10.0,
+        'SVT': 7.0,
+        'Anglais': 6.0,
+        'Philosophie': 5.0,
+        'Histoire et géographie': 9.0,
+        'Français': 7.0,
       },
       'coefs': {
         'Mathématiques': 5,
@@ -116,7 +116,10 @@ class _CheckPageState extends State<CheckPage> {
     super.dispose();
   }
 
-  double calculerMoyennePonderee(Map<String, double> notes, Map<String, int> coefs) {
+  double calculerMoyennePonderee(
+    Map<String, double> notes,
+    Map<String, int> coefs,
+  ) {
     double totalPoints = 0;
     int totalCoef = 0;
 
@@ -125,8 +128,10 @@ class _CheckPageState extends State<CheckPage> {
       totalPoints += note * coef;
       totalCoef += coef;
     });
-
-    return totalCoef > 0 ? totalPoints / totalCoef : 0.0;
+    final moyenne = totalCoef > 0 ? totalPoints / totalCoef : 0.0;
+    print("Total: $totalPoints | Coef: $totalCoef | Moyenne: $moyenne");
+    return moyenne;
+    //return totalCoef > 0 ? totalPoints / totalCoef : 0.0;
   }
 
   void verifierResultat() {
@@ -167,7 +172,9 @@ class _CheckPageState extends State<CheckPage> {
     final String numeroPV = result['numPv'];
     final String jury = result['ville'];
     final String serie = result['serie'] ?? '';
-    final Map<String, double> notes = Map<String, double>.from(result['notes'] ?? {});
+    final Map<String, double> notes = Map<String, double>.from(
+      result['notes'] ?? {},
+    );
     final Map<String, int> coefs = Map<String, int>.from(result['coefs'] ?? {});
 
     if (notes.isEmpty || coefs.isEmpty) {
@@ -176,46 +183,41 @@ class _CheckPageState extends State<CheckPage> {
     }
 
     final double moyenne = calculerMoyennePonderee(notes, coefs);
+    print("MOYENNE CALCULÉE : $moyenne");
 
     if (moyenne >= 10) {
       Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (_) => SuccessPage(
-            nom: nom,
-            prenom: prenom,
-            numeroPV: numeroPV,
-            jury: jury,
-            type: type,
-            serie: serie,
-            notes: notes,
-            moyenne: moyenne,
-          ),
+          builder:
+              (_) => SuccessPage(
+                nom: nom,
+                prenom: prenom,
+                numeroPV: numeroPV,
+                jury: jury,
+                type: type,
+                serie: serie,
+                notes: notes,
+                moyenne: moyenne,
+              ),
         ),
       );
     } else if (moyenne >= 8) {
       Navigator.push(
         context,
-        MaterialPageRoute(
-          builder: (_) => SecondTourPage(moyenne: moyenne),
-        ),
+        MaterialPageRoute(builder: (_) => SecondTourPage(moyenne: moyenne)),
       );
     } else {
       Navigator.push(
         context,
-        MaterialPageRoute(
-          builder: (_) => EchecPage(moyenne: moyenne),
-        ),
+        MaterialPageRoute(builder: (_) => EchecPage(moyenne: moyenne)),
       );
     }
   }
 
   void _showError(String message) {
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(message),
-        backgroundColor: AppColors.error,
-      ),
+      SnackBar(content: Text(message), backgroundColor: AppColors.error),
     );
   }
 
@@ -246,12 +248,13 @@ class _CheckPageState extends State<CheckPage> {
                 prefixIcon: Icon(Icons.calendar_today),
               ),
               value: selectedAnnee,
-              items: annees.map((year) {
-                return DropdownMenuItem<String>(
-                  value: year,
-                  child: Text(year),
-                );
-              }).toList(),
+              items:
+                  annees.map((year) {
+                    return DropdownMenuItem<String>(
+                      value: year,
+                      child: Text(year),
+                    );
+                  }).toList(),
               onChanged: (value) {
                 setState(() {
                   selectedAnnee = value;
@@ -266,9 +269,10 @@ class _CheckPageState extends State<CheckPage> {
                 border: OutlineInputBorder(),
                 prefixIcon: Icon(Icons.school),
               ),
-              items: examTypes.map((type) {
-                return DropdownMenuItem(value: type, child: Text(type));
-              }).toList(),
+              items:
+                  examTypes.map((type) {
+                    return DropdownMenuItem(value: type, child: Text(type));
+                  }).toList(),
               onChanged: (value) {
                 setState(() {
                   selectedExam = value!;
@@ -285,9 +289,10 @@ class _CheckPageState extends State<CheckPage> {
                   border: OutlineInputBorder(),
                   prefixIcon: Icon(Icons.category),
                 ),
-                items: bacSeries.map((serie) {
-                  return DropdownMenuItem(value: serie, child: Text(serie));
-                }).toList(),
+                items:
+                    bacSeries.map((serie) {
+                      return DropdownMenuItem(value: serie, child: Text(serie));
+                    }).toList(),
                 onChanged: (value) {
                   setState(() {
                     selectedSerie = value!;

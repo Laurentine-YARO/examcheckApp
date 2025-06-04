@@ -1,6 +1,6 @@
 import 'package:examcheck_app/utils/app_colors.dart';
 import 'package:flutter/material.dart';
-import 'package:examcheck_app/CheckPage.dart';
+import 'package:examcheck_app/mobile/CheckPage.dart';
 
 class RacourciPage extends StatefulWidget {
   const RacourciPage({super.key});

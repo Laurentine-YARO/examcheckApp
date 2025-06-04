@@ -1,4 +1,4 @@
-import 'package:examcheck_app/RelevePage.dart';
+import 'package:examcheck_app/mobile/RelevePage.dart';
 import 'package:examcheck_app/utils/app_colors.dart';
 import 'package:flutter/material.dart';
 

@@ -1,9 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:examcheck_app/adminPage.dart';
+import 'package:examcheck_app/web/adminPage.dart';
 import 'package:examcheck_app/utils/app_colors.dart';
-import 'package:examcheck_app/SignPage.dart';
+import 'package:examcheck_app/web/SignPage.dart';
 import 'package:flutter/material.dart';
-import 'package:examcheck_app/JuryPage.dart';
+import 'package:examcheck_app/web/JuryPage.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 class LoginPage extends StatefulWidget {

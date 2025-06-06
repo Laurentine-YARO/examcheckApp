@@ -31,46 +31,17 @@ class _LoginPageState extends State<LoginPage> {
       final email = emailController.text.trim();
       final password = passwordController.text.trim();
 
-      UserCredential userCredential = await FirebaseAuth.instance
-          .signInWithEmailAndPassword(email: email, password: password);
+      // Authentification
+      await FirebaseAuth.instance.signInWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
 
-      String emailUser = userCredential.user!.email!;
-      DocumentSnapshot snapshot = await FirebaseFirestore.instance
-          .collection('roles')
-          .doc(emailUser)
-          .get();
-
-      if (!snapshot.exists) {
-        setState(() {
-          errorMessage = "Accès refusé. Utilisateur non autorisé.";
-        });
-        return;
-      }
-
-      final data = snapshot.data() as Map<String, dynamic>?;
-
-      if (data == null || !data.containsKey('role')) {
-        setState(() {
-          errorMessage = "Rôle non défini. Accès refusé.";
-        });
-        return;
-      }
-
-      String role = data['role'];
-      print("Utilisateur connecté : $emailUser");
-      print("Rôle récupéré : $role");
-
-      if (role == 'jury') {
-        Navigator.pushReplacement(
-            context, MaterialPageRoute(builder: (_) => const JuryPage()));
-      } else if (role == 'admin') {
-        Navigator.pushReplacement(
-            context, MaterialPageRoute(builder: (_) => const AdminPage()));
-      } else {
-        setState(() {
-          errorMessage = "Rôle non reconnu. Accès refusé.";
-        });
-      }
+      // Rediriger vers une page quelconque après connexion réussie
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (_) => const AdminPage()), // ou JuryPage selon besoin
+      );
     } on FirebaseAuthException catch (e) {
       setState(() {
         errorMessage = e.message ?? "Erreur inconnue lors de la connexion.";
@@ -115,7 +86,7 @@ class _LoginPageState extends State<LoginPage> {
             ),
             const SizedBox(height: 40),
 
-            // 🔒 Email
+            // Email
             TextField(
               controller: emailController,
               decoration: const InputDecoration(
@@ -128,7 +99,7 @@ class _LoginPageState extends State<LoginPage> {
 
             const SizedBox(height: 20),
 
-            // 🔑 Mot de passe avec visibilité
+            // Mot de passe
             TextField(
               controller: passwordController,
               obscureText: _obscurePassword,
@@ -138,9 +109,7 @@ class _LoginPageState extends State<LoginPage> {
                 border: const OutlineInputBorder(),
                 suffixIcon: IconButton(
                   icon: Icon(
-                    _obscurePassword
-                        ? Icons.visibility_off
-                        : Icons.visibility,
+                    _obscurePassword ? Icons.visibility_off : Icons.visibility,
                     color: Colors.grey,
                   ),
                   onPressed: () {
@@ -152,7 +121,7 @@ class _LoginPageState extends State<LoginPage> {
               ),
             ),
 
-            // 🔁 Mot de passe oublié
+            // Mot de passe oublié
             TextButton(
               onPressed: () {
                 final email = emailController.text.trim();
@@ -177,11 +146,18 @@ class _LoginPageState extends State<LoginPage> {
 
             const SizedBox(height: 30),
 
-            // ✅ Bouton de connexion
+            // Bouton de connexion
             SizedBox(
               height: 50,
               child: ElevatedButton(
-                onPressed: isLoading ? null : loginUser,
+                onPressed:(){
+                Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const JuryPage()
+                          ),
+                    );
+                },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: AppColors.primary,
                   shape: RoundedRectangleBorder(

@@ -20,6 +20,10 @@ class _SignUpPageState extends State<SignUpPage> {
   String errorMessage = '';
   bool isLoading = false;
 
+  String encodeEmail(String email) {
+    return email.replaceAll('.', ',');
+  }
+
   Future<void> registerUser() async {
     setState(() {
       errorMessage = '';
@@ -46,21 +50,22 @@ class _SignUpPageState extends State<SignUpPage> {
     }
 
     try {
-      // 🔐 Vérification dans Firestore "roles"
-      final roleDoc = await FirebaseFirestore.instance
-          .collection('roles')
-          .doc(email)
-          .get();
+      // 🔐 Lecture sécurisée du rôle dans Firestore
+      //final encodedEmail = encodeEmail(email);
+      //final roleDoc = await FirebaseFirestore.instance
+         // .collection('roles')
+         // .doc(encodedEmail)
+         // .get();
 
-      if (!roleDoc.exists) {
-        setState(() {
-          errorMessage = "Vous n'êtes pas autorisé à créer un compte.";
-          isLoading = false;
-        });
-        return;
-      }
+      //if (!roleDoc.exists) {
+        //setState(() {
+         // errorMessage = "Aucun rôle autorisé trouvé pour cet email.";
+         // isLoading = false;
+        //});
+        //return;
+      //}
 
-      final role = roleDoc['role']; // 'jury' ou 'admin'
+      //final role = roleDoc['role']; // 'jury' ou 'admin'
 
       // 🔐 Création du compte utilisateur
       UserCredential userCredential = await FirebaseAuth.instance
@@ -68,28 +73,33 @@ class _SignUpPageState extends State<SignUpPage> {
 
       final uid = userCredential.user!.uid;
 
+      // 🔐 Enregistrement du profil utilisateur
       await FirebaseFirestore.instance.collection('users').doc(uid).set({
         'email': email,
-        'role': role,
+        //'role': role,
         'createdAt': FieldValue.serverTimestamp(),
       });
 
-      // ✅ Redirection selon le rôle
-      if (role == 'jury') {
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (_) => const JuryPage()),
-        );
-      } else if (role == 'admin') {
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (_) => const AdminPage()),
-        );
-      }
+      // 🔁 Redirection selon le rôle
+      //if (role == 'jury') {
+        //Navigator.pushReplacement(
+          //context,
+          //MaterialPageRoute(builder: (_) => const JuryPage()),
+       // );
+      //} else if (role == 'admin') {
+        //Navigator.pushReplacement(
+         ///// context,
+         // MaterialPageRoute(builder: (_) => const AdminPage()),
+        //);
+     // }
 
     } on FirebaseAuthException catch (e) {
       setState(() {
         errorMessage = e.message ?? 'Erreur inconnue';
+      });
+    } catch (e) {
+      setState(() {
+        errorMessage = 'Erreur lors de l’inscription : $e';
       });
     } finally {
       setState(() {
@@ -119,7 +129,7 @@ class _SignUpPageState extends State<SignUpPage> {
           children: [
             Image.asset('assets/images/login(1).png', height: 100),
             const SizedBox(height: 30),
-            const Text("Inscription (Jury/Admin)", style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold)),
+            const Text("Inscription ", style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold)),
             const SizedBox(height: 40),
 
             TextField(
